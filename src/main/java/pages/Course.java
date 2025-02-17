@@ -1,9 +1,7 @@
 package pages;
 
-
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -19,14 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Course {
-    private final static String OTUS_URL = "https://otus.ru";
     private String title;
     private Date startDate;
     private String url;
     private WebDriver driver;
 
     @Inject
-    public Course( WebDriver driver) {
+    public Course(WebDriver driver) {
         this.driver = driver;
     }
 
@@ -44,8 +41,6 @@ public class Course {
         this.url = "/course/";
         this.driver = driver;
     }
-
-
 
     public String getTitle() {
         return title;
@@ -91,7 +86,7 @@ public class Course {
     }
 
     public static void verifyCourseDetails(WebDriver driver, Course course) {
-        String courseUrl = OTUS_URL + course.getUrl();
+        String courseUrl = CourseUrlProvider.getCourseUrl() + course.getUrl();
         driver.get(courseUrl);
 
         WebElement coursePageTitle = driver.findElement(By.cssSelector(".course-page__title"));
@@ -104,7 +99,7 @@ public class Course {
     }
 
     public void openRandomCategory() {
-        driver.get(OTUS_URL);
+        driver.get(CourseUrlProvider.getCourseUrl());
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         WebElement menu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='__next']//button[contains(@class, 'menu-button')]")));
