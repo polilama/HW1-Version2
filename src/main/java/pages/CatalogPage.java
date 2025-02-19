@@ -31,9 +31,7 @@ public class CatalogPage {
     }
 
     public Optional<WebElement> findCourseByName(String courseName) {
-        List<WebElement> courseNameList = driver.findElements(By.cssSelector("#__next > div.sc-1j17uuq-0.klmZDZ.sc-1u2d5lq-0.oYOFo > main > div.sc-x072mc-0.sc-13r6hla-0.hOtCic.dcvVQP > section > div.sc-18q05a6-0.incGfX > div > a.sc-zzdkm7-0.IAANo"));
-
-        return courseNameList.stream()
+        return courseCards.stream()
                 .filter(element -> element.getText().equalsIgnoreCase(courseName))
                 .findFirst();
     }
@@ -48,4 +46,5 @@ public class CatalogPage {
         js.executeScript("arguments[0].style.border='3px solid red'", element);
     }
 }
+
 

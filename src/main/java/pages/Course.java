@@ -9,8 +9,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import javax.inject.Inject;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Course {
     private String title;
-    private Date startDate;
+    private LocalDate startDate;
     private String url;
     private WebDriver driver;
 
@@ -28,18 +29,10 @@ public class Course {
     }
 
     @Inject
-    public Course(String title, Date startDate) {
+    public Course(String title, LocalDate startDate) {
         this.title = title;
         this.startDate = startDate;
         this.url = "/course/";
-    }
-
-    @Inject
-    public Course(String title, Date startDate, WebDriver driver) {
-        this.title = title;
-        this.startDate = startDate;
-        this.url = "/course/";
-        this.driver = driver;
     }
 
     public String getTitle() {
@@ -50,7 +43,7 @@ public class Course {
         return url;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
@@ -59,7 +52,7 @@ public class Course {
                 .map(card -> {
                     String title = card.findElement(By.cssSelector(".course-card__title")).getText();
                     String dateString = card.findElement(By.cssSelector(".course-card__start-date")).getText();
-                    Date startDate = parseDate(dateString);
+                    LocalDate startDate = parseDate(dateString);
                     return new Course(title, startDate);
                 })
                 .toList();
@@ -67,21 +60,21 @@ public class Course {
 
     public static Optional<Course> findEarliestCourse(List<Course> courses) {
         return courses.stream()
-                .reduce((course1, course2) -> course1.getStartDate().before(course2.getStartDate()) ? course1 : course2);
+                .reduce((course1, course2) -> course1.getStartDate().isBefore(course2.getStartDate()) ? course1 : course2);
     }
 
     public static Optional<Course> findLatestCourse(List<Course> courses) {
         return courses.stream()
-                .reduce((course1, course2) -> course1.getStartDate().after(course2.getStartDate()) ? course1 : course2);
+                .reduce((course1, course2) -> course1.getStartDate().isAfter(course2.getStartDate()) ? course1 : course2);
     }
 
-    private static Date parseDate(String dateString) {
+    private static LocalDate parseDate(String dateString) {
         try {
-            var dateFormat = new SimpleDateFormat("d MMMM yyyy", Locale.forLanguageTag("ru"));
-            return dateFormat.parse(dateString.trim());
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("ru"));
+            return LocalDate.parse(dateString.trim(), dateFormat);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Date();
+            return LocalDate.now(); // Возвращаем текущую дату в случае ошибки
         }
     }
 

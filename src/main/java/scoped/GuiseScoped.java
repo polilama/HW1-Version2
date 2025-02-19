@@ -6,7 +6,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import javax.inject.Inject;
 
 public class GuiseScoped {
-
     private WebDriver driver;
 
     @Inject
